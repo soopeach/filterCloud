@@ -149,31 +149,72 @@ public class Main {
 
             // 로그인
             if (command == 1){
-                System.out.println("아이디를 입력해주세요. : ");
-                String id = in.next();
-                System.out.println("비밀번호를 입력해주세요. : ");
-                String password = in.next();
+                while (!isLogin){
+                    System.out.println("아이디를 입력해주세요. : ");
+                    String id = in.next();
+                    System.out.println("비밀번호를 입력해주세요. : \n뒤로 가러면 quit을 입력해주세요.");
+                    String password = in.next();
 
-                // 데이터에 있는 id, password인지 확인.
-                for(User user : userList){
-                    if (user.getId().equals(id) && user.getPassword().equals(password)){
-                        loggedInUser.setId(user.getId());
-                        loggedInUser.setPassword(user.getPassword());
-                        loggedInUser.setNickName(user.getNickName());
-                        System.out.println("로그인에 성공하였습니다. 반갑습니다. " + loggedInUser.getNickName() + "님! 오늘도 좋은 하루되세요~!");
-                        isLogin = true;
-                        break;
+                    if (password.equals("quit")) break;
+
+                    // 데이터에 있는 id, password인지 확인. 동일하다면 로그인처리
+                    for(User user : userList){
+                        if (user.getId().equals(id) && user.getPassword().equals(password)){
+                            loggedInUser.setId(user.getId());
+                            loggedInUser.setPassword(user.getPassword());
+                            loggedInUser.setNickName(user.getNickName());
+                            System.out.println("로그인에 성공하였습니다. 반갑습니다. " + loggedInUser.getNickName() + "님! 오늘도 좋은 하루되세요~!");
+                            isLogin = true;
+                            break;
+                        }
                     }
+                    if (!isLogin) System.out.println("없는 정보입니다. 다시 입력해주세요. ");
                 }
 
             // 회원가입
             } else if (command == 2){
+                Boolean signUpSuccess;
+                while(!isLogin){
+                    signUpSuccess = true;
+                    System.out.println("회원가입할 아이디를 입력해주세요. : ");
+                    String id = in.next();
+                    System.out.println("회원가입할 비밀번호를 입력해주세요. : ");
+                    String password = in.next();
+                    System.out.println("닉네임을를 입력해주세요. : ");
+                    String nickName = in.next();
+
+                    // id 중복여부 검사.
+                    for(User user : userList){
+                        if (user.getId().equals(id)){
+                            System.out.println("중복된 아이디 입니다. 다시 입력해주세요.");
+                            signUpSuccess = false;
+                            break;
+                        }
+                    }
+
+                    // 중복되지 않았을 때만 회원가입에 성공
+                    if (signUpSuccess){
+                        User newUser = new User(id, password, nickName);
+                        // 회원가입 후 자동 로그인 처리
+                        loggedInUser.setId(newUser.getId());
+                        loggedInUser.setPassword(newUser.getPassword());
+                        loggedInUser.setNickName(newUser.getNickName());
+
+                        // UserDataList에 갱신하기 위함.
+                        userList.add(newUser);
+                        isLogin = true;
+                        System.out.println("회원가입이 완료되었습니다. 반갑습니다. " + loggedInUser.getNickName() + "님 오늘도 좋은 하루되세요~!");
+                    }
+
+                }
+                // 새로 회원가입한 유저의 정보를 UserDataList에 추가.
+                saveUserList(userList);
 
             } else {
                 System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
 
-            saveUserList(userList);
+
         }
 
         // 필터 관리 기능.
