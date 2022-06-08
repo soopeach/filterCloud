@@ -1,8 +1,10 @@
 package filter;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class FilterManager {
+    private static Scanner in = new Scanner(System.in);
     public ArrayList<FilterData> filters;
 
     public FilterManager() {
@@ -13,12 +15,6 @@ public class FilterManager {
     public void add(String filterName, float bright, float contrast, float cloudy, float chroma, String madeBy) {
         FilterData filterData = new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy);
         filters.add(filterData);
-    }
-
-    public void showAllData() {
-		for(FilterData filter : filters){
-			filter.printInfo();
-		}
     }
 
     public int findLocation(String filterName) {
@@ -37,6 +33,71 @@ public class FilterManager {
 
     public FilterData get(int pos) {
         return filters.get(pos);
+    }
+
+
+    // 모든 필터 보기
+    public void showAllData() {
+        for(FilterData filter : filters){
+            filter.printInfo();
+        }
+    }
+
+    // 필터 추가
+    public void addFilter() {
+        while (true) {
+            System.out.print("filtername (quit to exit) : ");
+            String filterName = in.next();
+            if (filterName.equals("quit")) break;
+            System.out.print("bright : ");
+            float bright = in.nextFloat();
+            System.out.print("contrast : ");
+            float contrast = in.nextFloat();
+            System.out.print("cloudy : ");
+            float cloudy = in.nextFloat();
+            System.out.print("chroma : ");
+            float chroma = in.nextFloat();
+            System.out.print("Who Made? : ");
+            String madeBy = in.next();
+            FilterData filterData = new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy);
+            filters.add(filterData);
+
+        }
+    }
+
+    // 필터 업데이트하기
+    public void updateFilter() {
+        System.out.print("Filter name to update : ");
+        String filterName = in.next();
+        int pos = findLocation(filterName);
+        if (pos != -1) {
+            System.out.print("New name : ");
+            filterName = in.next();
+            System.out.print("New bright : ");
+            float bright = in.nextFloat();
+            System.out.print("New contrast : ");
+            float contrast = in.nextFloat();
+            System.out.print("New cloudy : ");
+            float cloudy = in.nextFloat();
+            System.out.print("New chroma : ");
+            float chroma = in.nextFloat();
+            System.out.print("Who Made? : ");
+            String madeBy = in.next();
+            filters.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy));
+        }
+    }
+
+    // 필터 제거하기
+    public void removeFilter() {
+        System.out.print("Filter name to remove : ");
+        String filterName = in.next();
+        int pos = findLocation(filterName);
+        if (pos != -1) {
+            remove(pos);
+        } else {
+            System.out.println("Can't find filter!");
+        }
+
     }
 
 }

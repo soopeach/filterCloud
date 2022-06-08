@@ -72,68 +72,9 @@ public class Main {
         System.out.println("4. 필터 삭제하기");
         System.out.println("0. 종료");
     }
-    // 필터 추가
-    private static void addFilter() {
-        while (true) {
-            System.out.print("filtername (quit to exit) : ");
-            String filterName = in.next();
-            if (filterName.equals("quit")) break;
-            System.out.print("bright : ");
-            float bright = in.nextFloat();
-            System.out.print("contrast : ");
-            float contrast = in.nextFloat();
-            System.out.print("cloudy : ");
-            float cloudy = in.nextFloat();
-            System.out.print("chroma : ");
-            float chroma = in.nextFloat();
-            System.out.print("Who Made? : ");
-            String madeBy = in.next();
-            FilterData filterData = new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy);
-            manager.filters.add(filterData);
 
-        }
-    }
-    // 모든 필터 보기
-    private static void showAllFilter() {
-        manager.showAllData();
-    }
-    // 필터 업데이트하기
-    private static void updateFilter() {
-        System.out.print("Filter name to update : ");
-        String filterName = in.next();
-        int pos = manager.findLocation(filterName);
-        if (pos != -1) {
-            System.out.print("New name : ");
-            filterName = in.next();
-            System.out.print("New bright : ");
-            float bright = in.nextFloat();
-            System.out.print("New contrast : ");
-            float contrast = in.nextFloat();
-            System.out.print("New cloudy : ");
-            float cloudy = in.nextFloat();
-            System.out.print("New chroma : ");
-            float chroma = in.nextFloat();
-            System.out.print("Who Made? : ");
-            String madeBy = in.next();
-            manager.filters.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy));
-        }
-    }
-    // 필터 제거하기
-    private static void removeFilter() {
-        System.out.print("Filter name to remove : ");
-        String filterName = in.next();
-        int pos = manager.findLocation(filterName);
-        if (pos != -1) {
-            manager.remove(pos);
-        } else {
-            System.out.println("Can't find filter!");
-        }
-
-    }
 
     public static void main(String[] args) {
-
-
 
         // 유저 데이터가 저장되어있는 userDataList.csv를 불러와서 읽은 후 userList에 저장함.
         loadUserList("UserDataList.csv");
@@ -214,7 +155,6 @@ public class Main {
                 System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
 
-
         }
 
         // 필터 관리 기능.
@@ -227,13 +167,13 @@ public class Main {
             }
             switch (menu) {
                 // 모든 필터 보기.
-                case 1 -> showAllFilter();
+                case 1 -> manager.showAllData();
                 // 필터 추가하기.
-                case 2 -> addFilter();
+                case 2 -> manager.addFilter();
                 // 필터 업데이트하기.
-                case 3 -> updateFilter();
+                case 3 -> manager.updateFilter();
                 // 필터 삭제하기.
-                case 4 -> removeFilter();
+                case 4 -> manager.removeFilter();
 
                 default -> System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
