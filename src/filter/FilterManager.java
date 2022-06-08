@@ -1,5 +1,7 @@
 package filter;
 
+import user.UserManager;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,7 +37,6 @@ public class FilterManager {
         return filters.get(pos);
     }
 
-
     // 모든 필터 보기
     public void showAllData() {
         for(FilterData filter : filters){
@@ -57,10 +58,9 @@ public class FilterManager {
             float cloudy = in.nextFloat();
             System.out.print("chroma : ");
             float chroma = in.nextFloat();
-            System.out.print("Who Made? : ");
-            String madeBy = in.next();
-            FilterData filterData = new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy);
-            filters.add(filterData);
+            // 현재 로그인 되어있는 유저의 닉네임
+            String curUserNickname = UserManager.loggedInUser.getNickName();
+            filters.add(new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
 
         }
     }
@@ -81,9 +81,9 @@ public class FilterManager {
             float cloudy = in.nextFloat();
             System.out.print("New chroma : ");
             float chroma = in.nextFloat();
-            System.out.print("Who Made? : ");
-            String madeBy = in.next();
-            filters.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy));
+            // 현재 로그인 되어있는 유저의 닉네임
+            String curUserNickname = UserManager.loggedInUser.getNickName();
+            filters.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
         }
     }
 
