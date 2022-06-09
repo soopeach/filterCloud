@@ -31,6 +31,7 @@ public class Main {
         System.out.println("[로그인을 해주세요. 아이디가 없다면 회원가입을 해주세요.]");
         System.out.println("1. 로그인");
         System.out.println("2. 회원가입");
+        System.out.println("0. 종료");
     }
 
     public static void main(String[] args) {
@@ -45,6 +46,9 @@ public class Main {
                 // 회원가입
             } else if (command == 2) {
                 userManager.signUp();
+            } else if (command == 0) {
+                System.out.println("시스템을 종료합니다.");
+                return;
             } else {
                 System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
