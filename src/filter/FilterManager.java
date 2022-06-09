@@ -15,7 +15,17 @@ public class FilterManager {
     private Random random = new Random();
 
     public FilterManager() {
+
         filterList = new ArrayList<>();
+
+        // 필터 클라우드에 있는 데이터들을 불러옴.
+        // 데이터를 불러오는 작업은 오랜시간을 소요할 수 있어 별도의 스레드에서 동작.
+        // Runnable 인터페이스를 람디식으로 구현함.
+        Runnable loadFilterCloudData = () -> {
+            loadFilterCloud("FilterCloud.csv");
+        };
+        Thread threadForFilterCloud = new Thread(loadFilterCloudData);
+        threadForFilterCloud.start();
     }
 
     public void add(String filterName, float bright, float contrast, float cloudy, float chroma, String madeBy) {
@@ -42,9 +52,10 @@ public class FilterManager {
         if (isFilterCloudEmpty()) return;
         // 내가 만든 필터가 있는지 확인할 변수
         Boolean haveMineFilter = false;
-        for (FilterData filter : filterList) {
+        for (FilterData filter: filterList) {
+
             // 내가 만든 필터들만 출력.
-            if (filter.getMadeBy() == UserManager.loggedInUser.getNickName()){
+            if (filter.getMadeBy().equals( UserManager.loggedInUser.getNickName())){
                 haveMineFilter = true;
                 filter.printInfo();
             }

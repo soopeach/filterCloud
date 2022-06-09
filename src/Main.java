@@ -8,6 +8,7 @@ public class Main {
 
     private static Scanner in = new Scanner(System.in);
     // 필터매니저
+    // 객체 생성과 동시에(필터 클라우드의 데이터를 불러오게됨)
     public static FilterManager filterManager = new FilterManager();
     // 유저매니저
     // 객체 생성과 동시에(유저들 데이터를 불러오게됨)
@@ -48,8 +49,6 @@ public class Main {
             }
         }
 
-        // 필터 클라우드에 있는 데이터들을 불러옴.
-        filterManager.loadFilterCloud("FilterCloud.csv");
         // 필터 관리 기능.
         while (true) {
             menuForFilter();
