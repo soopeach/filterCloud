@@ -5,12 +5,14 @@ import user.UserManager;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class FilterManager {
     private static Scanner in = new Scanner(System.in);
     private static ArrayList<FilterData> filterList;
+    private Random random = new Random();
 
     public FilterManager() {
         filterList = new ArrayList<>();
@@ -38,17 +40,25 @@ public class FilterManager {
         return filterList.get(pos);
     }
 
-    // 모든 필터 보기
-    public void showAllData() {
+    // 클라우드에 있는 모든 필터 보기
+    public void showAllMine() {
+
+        Boolean haveMineFilter = false;
         // 필터클라우드에 저장되어있는 데이터가 없다면
         // 경고문 출력 후 함수 즉시 종료
         if (filterList.isEmpty()) {
-            System.out.println("필터가 존재하지 않습니다.");
+            System.out.println("클라우드 내부에 필터가 존재하지 않습니다.");
             return;
         }
         for (FilterData filter : filterList) {
-            filter.printInfo();
+            // 내가 만든 필터들만 출력.
+            if (filter.getMadeBy() == UserManager.loggedInUser.getNickName()){
+                haveMineFilter = true;
+                filter.printInfo();
+            }
         }
+
+        System.out.println(UserManager.loggedInUser.getNickName() + "님이 만드신 필터가 존재하지 않습니다.");
     }
 
     // 필터 추가
@@ -112,6 +122,19 @@ public class FilterManager {
 
     }
 
+    // 클라우드에 있는 모든 필터 보기
+    public void showAllData() {
+        // 필터클라우드에 저장되어있는 데이터가 없다면
+        // 경고문 출력 후 함수 즉시 종료
+        if (filterList.isEmpty()) {
+            System.out.println("클라우드 내부에 필터가 존재하지 않습니다.");
+            return;
+        }
+        for (FilterData filter : filterList) {
+            filter.printInfo();
+        }
+    }
+
     // 필터 클라우드 파일 읽어오기.
     public void loadFilterCloud(String fileName) {
         try {
@@ -166,4 +189,17 @@ public class FilterManager {
     }
 
 
+    public void getRandomFilter() {
+        // 현재 클라우드에 저장되어있는 필터의 개수
+        int cntOfFilter = filterList.size();
+
+        if (cntOfFilter == 0){
+            System.out.println("클라우드 내부에 필터가 존재하지 않습니다.");
+        } else {
+            System.out.println("추천하는 필터의 정보입니다~");
+            // 랜덤한 필터의 정보를 출력
+            int randPos = random.nextInt(cntOfFilter);
+            filterList.get(randPos).printInfo();
+        }
+    }
 }

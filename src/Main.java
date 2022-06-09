@@ -20,6 +20,8 @@ public class Main {
         System.out.println("2. 필터 추가하기");
         System.out.println("3. 필터 수정하기");
         System.out.println("4. 필터 삭제하기");
+        System.out.println("5. 클라우드에 있는 필터 모두 보기");
+        System.out.println("6. 랜덤한 필터 추천받기");
         System.out.println("0. 종료");
     }
 
@@ -57,14 +59,18 @@ public class Main {
                 break;
             }
             switch (menu) {
-                // 모든 필터 보기.
-                case 1 -> filterManager.showAllData();
+                // 내가 올린 모든 필터 보기.
+                case 1 -> filterManager.showAllMine();
                 // 필터 추가하기.
                 case 2 -> filterManager.addFilter();
                 // 필터 업데이트하기.
                 case 3 -> filterManager.updateFilter();
                 // 필터 삭제하기.
                 case 4 -> filterManager.removeFilter();
+                // 클라우드에 있는 필터 모두보기(타인이 올린 필터포함)
+                case 5 -> filterManager.showAllData();
+                // 랜덤한 필터 추천받기
+                case 6 -> filterManager.getRandomFilter();
 
                 default -> System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
