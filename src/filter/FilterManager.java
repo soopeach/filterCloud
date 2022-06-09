@@ -119,11 +119,18 @@ public class FilterManager {
         System.out.print("삭제할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
         int pos = findLocation(filterName);
-        if (pos != -1) {
+
+        // 삭제할 필터의 이름과 일치하는 필터가 존재하고, 내가 만든 필터라면 삭제
+        if (pos != -1 && filterList.get(pos).getMadeBy().equals(UserManager.loggedInUser.getNickName())) {
             remove(pos);
-        } else {
+            System.out.println("정상적으로 삭제되었습니다..");
+        // 삭제할 필터의 이름과 일치하는 필터는 존재하지만, 내가 만든 필터가 아닐경우
+        } else if (pos != -1 && !filterList.get(pos).getMadeBy().equals(UserManager.loggedInUser.getNickName()))  {
+            System.out.println("필터의 제작자가 아닙니다. 삭제가 불가능합니다.");
+        }else {
             System.out.println("해당하는 이름의 필터가 존재하지 않습니다.");
         }
+
 
         saveFilterCloud();
 
@@ -185,7 +192,6 @@ public class FilterManager {
             }
             // 파일 닫기
             buf.close();
-            System.out.println("데이터 저장이 완료되었습니다.");
         } catch (IOException e) {
             e.printStackTrace();
         }
