@@ -11,6 +11,18 @@ public class UserManager {
     public static User loggedInUser = new User("notYet","notYet","notYet");
     public static Boolean isLogin = false;
 
+    // 객체 생성과 동시에 유저 리스트를 불러오기.
+    public UserManager() {
+        // 유저 데이터가 저장되어있는 userDataList.csv를 불러와서 읽은 후 userList에 저장함.
+        // 데이터를 불러오는 작업은 오랜시간을 소요할 수 있어 별도의 스레드에서 동작.
+        // Runnable 인터페이스를 람디식으로 구현함.
+        Runnable loadUserList = () -> {
+            loadUserList("UserDataList.csv");
+        };
+        Thread threadForLoadUserList = new Thread(loadUserList);
+        threadForLoadUserList.start();
+    }
+
     // 유저 데이터 목록 파일 읽어오기.
     public static void loadUserList(String fileName){
         try {

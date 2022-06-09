@@ -10,6 +10,7 @@ public class Main {
     // 필터매니저
     public static FilterManager filterManager = new FilterManager();
     // 유저매니저
+    // 객체 생성과 동시에(유저들 데이터를 불러오게됨)
     public static UserManager userManager = new UserManager();
 
     // 메뉴 보여주기
@@ -30,14 +31,6 @@ public class Main {
     }
     public static void main(String[] args) {
 
-        // 유저 데이터가 저장되어있는 userDataList.csv를 불러와서 읽은 후 userList에 저장함.
-        // 데이터를 불러오는 작업은 오랜시간을 소요할 수 있어 별도의 스레드에서 동작.
-        Runnable loadUserList = () -> {
-            UserManager.loadUserList("UserDataList.csv");
-        };
-        Thread threadForLoadUserList = new Thread(loadUserList);
-        threadForLoadUserList.start();
-
         // 로그인을 한 상태가 아니라면 로그인 먼저.
         while (!UserManager.isLogin){
             menuForLogin();
@@ -52,6 +45,9 @@ public class Main {
                 System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
         }
+
+        // 필터 클라우드에 있는 데이터들을 불러옴.
+        filterManager.loadFilterCloud("FilterCloud.csv");
         // 필터 관리 기능.
         while (true) {
             menuForFilter();

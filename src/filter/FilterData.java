@@ -60,6 +60,13 @@ public class FilterData {
         return this;
     }
 
+    public String getMadeBy() {
+        return madeBy;
+    }
+
+    public void setMadeBy(String madeBy) {
+        this.madeBy = madeBy;
+    }
 
     @Override
     public String toString() {
@@ -75,6 +82,7 @@ public class FilterData {
         System.out.println("채도 : " + chroma);
         System.out.println("만든이 : " + madeBy);
     }
+
 
 
 }

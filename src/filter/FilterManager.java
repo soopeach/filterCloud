@@ -1,45 +1,52 @@
 package filter;
 
+import user.User;
 import user.UserManager;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class FilterManager {
     private static Scanner in = new Scanner(System.in);
-    public ArrayList<FilterData> filters;
+    private static ArrayList<FilterData> filterList;
 
     public FilterManager() {
-        filters = new ArrayList<FilterData>();
+        filterList = new ArrayList<>();
     }
-
 
     public void add(String filterName, float bright, float contrast, float cloudy, float chroma, String madeBy) {
         FilterData filterData = new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy);
-        filters.add(filterData);
+        filterList.add(filterData);
     }
 
     public int findLocation(String filterName) {
-        for (int i = 0; i < filters.size(); i++) {
-            if (filters.get(i).getFilterName().equals(filterName)) {
+        for (int i = 0; i < filterList.size(); i++) {
+            if (filterList.get(i).getFilterName().equals(filterName)) {
                 return i;
             }
         }
-		System.out.println("해당하는 이름의 필터가 존재하지 않습니다.");
         return -1;
     }
 
     public void remove(int pos) {
-        filters.remove(pos);
+        filterList.remove(pos);
     }
 
     public FilterData get(int pos) {
-        return filters.get(pos);
+        return filterList.get(pos);
     }
 
     // 모든 필터 보기
     public void showAllData() {
-        for(FilterData filter : filters){
+        // 필터클라우드에 저장되어있는 데이터가 없다면
+        // 경고문 출력 후 함수 즉시 종료
+        if (filterList.isEmpty()) {
+            System.out.println("필터가 존재하지 않습니다.");
+            return;
+        }
+        for (FilterData filter : filterList) {
             filter.printInfo();
         }
     }
@@ -47,9 +54,9 @@ public class FilterManager {
     // 필터 추가
     public void addFilter() {
         while (true) {
-            System.out.print("filtername (quit to exit) : ");
+            System.out.print("필터의 이름을 입력해주세요. (나가시려면 종료를 입력해주세요.) : ");
             String filterName = in.next();
-            if (filterName.equals("quit")) break;
+            if (filterName.equals("종료")) break;
             System.out.print("bright : ");
             float bright = in.nextFloat();
             System.out.print("contrast : ");
@@ -60,44 +67,103 @@ public class FilterManager {
             float chroma = in.nextFloat();
             // 현재 로그인 되어있는 유저의 닉네임
             String curUserNickname = UserManager.loggedInUser.getNickName();
-            filters.add(new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+            filterList.add(new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
 
         }
+        saveFilterCloud();
     }
 
     // 필터 업데이트하기
     public void updateFilter() {
-        System.out.print("Filter name to update : ");
+        System.out.print("업데이트를 진행할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
         int pos = findLocation(filterName);
         if (pos != -1) {
-            System.out.print("New name : ");
+            System.out.print("새로운 name을 입력해주세요. : ");
             filterName = in.next();
-            System.out.print("New bright : ");
+            System.out.print("새로운 bright를 입력해주세요. : ");
             float bright = in.nextFloat();
-            System.out.print("New contrast : ");
+            System.out.print("새로운 contrast를 입력해주세요. : ");
             float contrast = in.nextFloat();
-            System.out.print("New cloudy : ");
+            System.out.print("새로운 cloudy를 입력해주세요. : ");
             float cloudy = in.nextFloat();
-            System.out.print("New chroma : ");
+            System.out.print("새로운 chroma를 입력해주세요. : ");
             float chroma = in.nextFloat();
             // 현재 로그인 되어있는 유저의 닉네임
             String curUserNickname = UserManager.loggedInUser.getNickName();
-            filters.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+            filterList.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
         }
+        saveFilterCloud();
+
     }
 
     // 필터 제거하기
     public void removeFilter() {
-        System.out.print("Filter name to remove : ");
+        System.out.print("삭제할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
         int pos = findLocation(filterName);
         if (pos != -1) {
             remove(pos);
         } else {
-            System.out.println("Can't find filter!");
+            System.out.println("해당하는 이름의 필터가 존재하지 않습니다.");
         }
 
+        saveFilterCloud();
+
     }
+
+    // 필터 클라우드 파일 읽어오기.
+    public void loadFilterCloud(String fileName) {
+        try {
+            FileReader reader = new FileReader(fileName); // 파일열기. 파일이 없으면 FileNotFoundException 오류 발생.
+            BufferedReader buf = new BufferedReader(reader);
+            String line;
+            while ((line = buf.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, "#");
+                String filterName = tokenizer.nextToken();
+                Float bright = Float.parseFloat(tokenizer.nextToken());
+                Float contrast = Float.parseFloat(tokenizer.nextToken());
+                Float cloudy = Float.parseFloat(tokenizer.nextToken());
+                Float chroma = Float.parseFloat(tokenizer.nextToken());
+                String madeBy = tokenizer.nextToken();
+
+                filterList.add(new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy));
+            }
+            buf.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(fileName + " 파일이 존재하지 않습니다.");
+            // e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println(fileName + " 파일로부터 데이터 읽기 중에 오류가 발생했습니다.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 필터 클라우드 파일 갱신하기.
+    public static void saveFilterCloud() {
+        // 파일열기, 기록하기, 파일 닫기
+        // try ~ catch(exception) : 예외처리구문. try 블록에서 예외(오류)가 발생하면 오류 종류에 따라 매칭되는 catch 구문이 실행됨.
+        try {
+            FileWriter writer = new FileWriter("FilterCloud.csv"); // 필터 클라우드
+            BufferedWriter buf = new BufferedWriter(writer);
+
+            // 파일에 데이터 기록하기
+            for (FilterData filter : filterList) {
+                buf.write(filter.getFilterName() + "#");
+                buf.write(filter.getBright() + "#");
+                buf.write(filter.getContrast() + "#");
+                buf.write(filter.getCloudy() + "#");
+                buf.write(filter.getChroma() + "#");
+                buf.write(filter.getMadeBy() + "#");
+                buf.newLine(); // 개행 (다음 줄로 내림)
+            }
+            // 파일 닫기
+            buf.close();
+            System.out.println("데이터 저장이 완료되었습니다.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
