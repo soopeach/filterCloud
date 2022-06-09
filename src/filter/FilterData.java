@@ -83,6 +83,4 @@ public class FilterData {
         System.out.println("만든이 : " + madeBy);
     }
 
-
-
 }

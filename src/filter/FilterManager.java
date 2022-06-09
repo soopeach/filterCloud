@@ -33,9 +33,12 @@ public class FilterManager {
         filterList.add(filterData);
     }
 
-    public int findLocation(String filterName) {
+    // 찾고자하는 필터의 이름을 입력받아 내가 만든 필터를 찾아 위치를 반환해줌. 없으면 -1 반환
+    public int findMineLocation(String filterName){
         for (int i = 0; i < filterList.size(); i++) {
-            if (filterList.get(i).getFilterName().equals(filterName)) {
+            FilterData curFilter =  filterList.get(i);
+            // 찾고자하는 필터의 이름이 일치하고 해당 필터가 내가 만든 것일 경우에만 위치 반환
+            if (curFilter.getFilterName().equals(filterName) && curFilter.getMadeBy().equals(UserManager.loggedInUser.getNickName())) {
                 return i;
             }
         }
@@ -92,7 +95,7 @@ public class FilterManager {
         if (isFilterCloudEmpty()) return;
         System.out.print("업데이트를 진행할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
-        int pos = findLocation(filterName);
+        int pos = findMineLocation(filterName);
         if (pos != -1) {
             System.out.print("새로운 name을 입력해주세요. : ");
             filterName = in.next();
@@ -107,6 +110,8 @@ public class FilterManager {
             // 현재 로그인 되어있는 유저의 닉네임
             String curUserNickname = UserManager.loggedInUser.getNickName();
             filterList.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+        } else {
+            System.out.print("해당하는 필터가 존재하지 않습니다. ");
         }
         saveFilterCloud();
 
@@ -118,19 +123,15 @@ public class FilterManager {
         if (isFilterCloudEmpty()) return;
         System.out.print("삭제할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
-        int pos = findLocation(filterName);
+        int pos = findMineLocation(filterName);
 
         // 삭제할 필터의 이름과 일치하는 필터가 존재하고, 내가 만든 필터라면 삭제
-        if (pos != -1 && filterList.get(pos).getMadeBy().equals(UserManager.loggedInUser.getNickName())) {
+        if (pos != -1) {
             remove(pos);
             System.out.println("정상적으로 삭제되었습니다..");
-        // 삭제할 필터의 이름과 일치하는 필터는 존재하지만, 내가 만든 필터가 아닐경우
-        } else if (pos != -1 && !filterList.get(pos).getMadeBy().equals(UserManager.loggedInUser.getNickName()))  {
-            System.out.println("필터의 제작자가 아닙니다. 삭제가 불가능합니다.");
         }else {
             System.out.println("해당하는 이름의 필터가 존재하지 않습니다.");
         }
-
 
         saveFilterCloud();
 
@@ -197,7 +198,7 @@ public class FilterManager {
         }
     }
 
-
+    // 랜덤 필터 추천받기
     public void getRandomFilter() {
         // 현재 클라우드에 저장되어있는 필터의 개수
         // 필터 클라우드가 비어있다면 경고문 출력 후 즉시 종료
