@@ -36,20 +36,12 @@ public class FilterManager {
         filterList.remove(pos);
     }
 
-    public FilterData get(int pos) {
-        return filterList.get(pos);
-    }
-
     // 클라우드에 있는 모든 필터 보기
     public void showAllMine() {
-
+        // 필터 클라우드가 비어있다면 경고문 출력 후 즉시 종료
+        if (isFilterCloudEmpty()) return;
+        // 내가 만든 필터가 있는지 확인할 변수
         Boolean haveMineFilter = false;
-        // 필터클라우드에 저장되어있는 데이터가 없다면
-        // 경고문 출력 후 함수 즉시 종료
-        if (filterList.isEmpty()) {
-            System.out.println("클라우드 내부에 필터가 존재하지 않습니다.");
-            return;
-        }
         for (FilterData filter : filterList) {
             // 내가 만든 필터들만 출력.
             if (filter.getMadeBy() == UserManager.loggedInUser.getNickName()){
@@ -57,7 +49,6 @@ public class FilterManager {
                 filter.printInfo();
             }
         }
-
         System.out.println(UserManager.loggedInUser.getNickName() + "님이 만드신 필터가 존재하지 않습니다.");
     }
 
@@ -85,6 +76,8 @@ public class FilterManager {
 
     // 필터 업데이트하기
     public void updateFilter() {
+        // 필터 클라우드가 비어있다면 경고문 출력 후 즉시 종료
+        if (isFilterCloudEmpty()) return;
         System.out.print("업데이트를 진행할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
         int pos = findLocation(filterName);
@@ -109,6 +102,8 @@ public class FilterManager {
 
     // 필터 제거하기
     public void removeFilter() {
+        // 필터 클라우드가 비어있다면 경고문 출력 후 즉시 종료
+        if (isFilterCloudEmpty()) return;
         System.out.print("삭제할 필터의 이름을 입력해주세요. : ");
         String filterName = in.next();
         int pos = findLocation(filterName);
@@ -124,12 +119,8 @@ public class FilterManager {
 
     // 클라우드에 있는 모든 필터 보기
     public void showAllData() {
-        // 필터클라우드에 저장되어있는 데이터가 없다면
-        // 경고문 출력 후 함수 즉시 종료
-        if (filterList.isEmpty()) {
-            System.out.println("클라우드 내부에 필터가 존재하지 않습니다.");
-            return;
-        }
+        // 필터 클라우드가 비어있다면 경고문 출력 후 즉시 종료
+        if (isFilterCloudEmpty()) return;
         for (FilterData filter : filterList) {
             filter.printInfo();
         }
@@ -191,15 +182,25 @@ public class FilterManager {
 
     public void getRandomFilter() {
         // 현재 클라우드에 저장되어있는 필터의 개수
-        int cntOfFilter = filterList.size();
+        // 필터 클라우드가 비어있다면 경고문 출력 후 즉시 종료
+        if (isFilterCloudEmpty()) return;
 
-        if (cntOfFilter == 0){
+        // 클라우드에 있는 필터의 개수
+        int cntOfFilter = filterList.size();
+        System.out.println("추천하는 필터의 정보입니다~");
+        // 랜덤한 필터의 정보를 출력
+        int randPos = random.nextInt(cntOfFilter);
+        filterList.get(randPos).printInfo();
+
+    }
+
+    // 필터클라우드에 저장되어있는 데이터가 없다면
+    // 경고문 출력 후 함수 즉시 종료
+    Boolean isFilterCloudEmpty(){
+        if (filterList.isEmpty()) {
             System.out.println("클라우드 내부에 필터가 존재하지 않습니다.");
-        } else {
-            System.out.println("추천하는 필터의 정보입니다~");
-            // 랜덤한 필터의 정보를 출력
-            int randPos = random.nextInt(cntOfFilter);
-            filterList.get(randPos).printInfo();
+            return true;
         }
+        return false;
     }
 }
