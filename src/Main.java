@@ -27,22 +27,23 @@ public class Main {
     }
 
     // 로그인 메뉴 보여주기
-    private static void menuForLogin(){
+    private static void menuForLogin() {
         System.out.println("[로그인을 해주세요. 아이디가 없다면 회원가입을 해주세요.]");
         System.out.println("1. 로그인");
         System.out.println("2. 회원가입");
     }
+
     public static void main(String[] args) {
 
         // 로그인을 한 상태가 아니라면 로그인 먼저.
-        while (!UserManager.isLogin){
+        while (!UserManager.isLogin) {
             menuForLogin();
             int command = in.nextInt();
             // 로그인
-            if (command == 1){
+            if (command == 1) {
                 userManager.login();
-            // 회원가입
-            } else if (command == 2){
+                // 회원가입
+            } else if (command == 2) {
                 userManager.signUp();
             } else {
                 System.out.println("잘못된 선택입니다. 다시 입력해주세요.");

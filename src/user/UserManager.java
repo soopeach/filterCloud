@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 public class UserManager {
     private static Scanner in = new Scanner(System.in);
     public static ArrayList<User> userList = new ArrayList<>();
-    public static User loggedInUser = new User("notYet","notYet","notYet");
+    public static User loggedInUser = new User("notYet", "notYet", "notYet");
     public static Boolean isLogin = false;
 
     // 객체 생성과 동시에 유저 리스트를 불러오기.
@@ -24,18 +24,18 @@ public class UserManager {
     }
 
     // 유저 데이터 목록 파일 읽어오기.
-    public static void loadUserList(String fileName){
+    public static void loadUserList(String fileName) {
         try {
             FileReader reader = new FileReader(fileName); // 파일열기. 파일이 없으면 FileNotFoundException 오류 발생.
             BufferedReader buf = new BufferedReader(reader);
             String line;
-            while((line = buf.readLine()) != null){
+            while ((line = buf.readLine()) != null) {
                 StringTokenizer tokenizer = new StringTokenizer(line, "#");
                 String id = tokenizer.nextToken();
                 String password = tokenizer.nextToken();
                 String nickName = tokenizer.nextToken();
 
-                userList.add(new User(id,password,nickName));
+                userList.add(new User(id, password, nickName));
             }
             buf.close();
         } catch (FileNotFoundException e) {
@@ -48,7 +48,7 @@ public class UserManager {
     }
 
     // 유저 데이터 목록 파일 갱신하기.
-    public static void saveUserList(){
+    public static void saveUserList() {
         // 파일열기, 기록하기, 파일 닫기
         // try ~ catch(exception) : 예외처리구문. try 블록에서 예외(오류)가 발생하면 오류 종류에 따라 매칭되는 catch 구문이 실행됨.
         try {
@@ -57,7 +57,7 @@ public class UserManager {
             BufferedWriter buf = new BufferedWriter(writer);
 
             // 파일에 데이터 기록하기
-            for(User user : userList){
+            for (User user : userList) {
                 buf.write(user.getId() + "#");
                 buf.write(user.getPassword() + "#");
                 buf.write(user.getNickName()); // double --> string
@@ -72,8 +72,8 @@ public class UserManager {
     }
 
     // 로그인
-    public void login(){
-        while (!UserManager.isLogin){
+    public void login() {
+        while (!UserManager.isLogin) {
             System.out.println("아이디를 입력해주세요. : ");
             String id = in.next();
             System.out.println("비밀번호를 입력해주세요. : \n뒤로 가러면 quit을 입력해주세요.");
@@ -82,8 +82,8 @@ public class UserManager {
             if (password.equals("quit")) break;
 
             // 데이터에 있는 id, password인지 확인. 동일하다면 로그인처리
-            for(User user : UserManager.userList){
-                if (user.getId().equals(id) && user.getPassword().equals(password)){
+            for (User user : UserManager.userList) {
+                if (user.getId().equals(id) && user.getPassword().equals(password)) {
                     UserManager.loggedInUser.setId(user.getId());
                     UserManager.loggedInUser.setPassword(user.getPassword());
                     UserManager.loggedInUser.setNickName(user.getNickName());
@@ -100,7 +100,7 @@ public class UserManager {
     // 회원가입
     public void signUp() {
         Boolean signUpSuccess;
-        while(!UserManager.isLogin){
+        while (!UserManager.isLogin) {
             signUpSuccess = true;
             System.out.println("회원가입할 아이디를 입력해주세요. : ");
             String id = in.next();
@@ -110,8 +110,8 @@ public class UserManager {
             String nickName = in.next();
 
             // id 중복여부 검사.
-            for(User user : UserManager.userList){
-                if (user.getId().equals(id)){
+            for (User user : UserManager.userList) {
+                if (user.getId().equals(id)) {
                     System.out.println("중복된 아이디 입니다. 다시 입력해주세요.");
                     signUpSuccess = false;
                     break;
@@ -119,7 +119,7 @@ public class UserManager {
             }
 
             // 중복되지 않았을 때만 회원가입에 성공
-            if (signUpSuccess){
+            if (signUpSuccess) {
                 User newUser = new User(id, password, nickName);
                 // 회원가입 후 자동 로그인 처리
                 UserManager.loggedInUser.setId(newUser.getId());
