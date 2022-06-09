@@ -49,7 +49,8 @@ public class FilterManager {
                 filter.printInfo();
             }
         }
-        System.out.println(UserManager.loggedInUser.getNickName() + "님이 만드신 필터가 존재하지 않습니다.");
+        // 내가 만든 필터가 존재하지 않는다면
+        if(!haveMineFilter) System.out.println(UserManager.loggedInUser.getNickName() + "님이 만드신 필터가 존재하지 않습니다.");
     }
 
     // 필터 추가

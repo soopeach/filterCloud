@@ -94,6 +94,7 @@ public class UserManager {
             }
             if (!UserManager.isLogin) System.out.println("없는 정보입니다. 다시 입력해주세요. ");
         }
+
     }
 
     // 회원가입
