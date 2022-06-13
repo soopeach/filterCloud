@@ -106,8 +106,10 @@ public class UserManager {
             String id = in.next();
             System.out.println("회원가입할 비밀번호를 입력해주세요. : ");
             String password = in.next();
-            System.out.println("닉네임을를 입력해주세요. : ");
+            System.out.println("닉네임을 입력해주세요. : \n뒤로 가러면 quit을 입력해주세요.");
             String nickName = in.next();
+
+            if (nickName.equals("quit")) break;
 
             // id 중복여부 검사.
             for (User user : UserManager.userList) {
@@ -116,6 +118,13 @@ public class UserManager {
                     signUpSuccess = false;
                     break;
                 }
+
+                if (user.getNickName().equals(nickName)) {
+                    System.out.println("중복된 닉네임 입니다. 다시 입력해주세요.");
+                    signUpSuccess = false;
+                    break;
+                }
+
             }
 
             // 중복되지 않았을 때만 회원가입에 성공
@@ -135,5 +144,10 @@ public class UserManager {
         }
         // 새로 회원가입한 유저의 정보를 UserDataList에 추가.
         UserManager.saveUserList();
+    }
+
+    // 회원탈퇴
+    public void signOut() {
+
     }
 }
