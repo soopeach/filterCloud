@@ -18,11 +18,12 @@ public class Main {
     private static void menuForFilter() {
         System.out.println("[[필터 클라우드 서비스]]");
         System.out.println("1. 내 필터 모두 보기");
-        System.out.println("2. 필터 추가하기");
+        System.out.println("2. 필터 업로드하기");
         System.out.println("3. 필터 수정하기");
         System.out.println("4. 필터 삭제하기");
         System.out.println("5. 클라우드에 있는 필터 모두 보기");
         System.out.println("6. 랜덤한 필터 추천받기");
+        System.out.println("9. 회원탈퇴");
         System.out.println("0. 종료");
     }
 
@@ -44,12 +45,10 @@ public class Main {
             // 로그인
             if (command == 1) {
                 userManager.login();
-                // 회원가입
+            // 회원가입
             } else if (command == 2) {
                 userManager.signUp();
-            } else if (command == 3) {
-                userManager.signOut();
-            } else if (command == 0) {
+            }  else if (command == 0) {
                 System.out.println("시스템을 종료합니다.");
                 return;
             } else {
@@ -79,7 +78,10 @@ public class Main {
                 // 랜덤한 필터 추천받기
                 case 6 -> filterManager.getRandomFilter();
 
-                default -> System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
+                // 회원탈퇴
+                case 9 -> userManager.signOut();
+
+               default -> System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
         }
 

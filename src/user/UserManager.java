@@ -1,5 +1,8 @@
 package user;
 
+import filter.FilterData;
+import filter.FilterManager;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -65,7 +68,7 @@ public class UserManager {
             }
             // 파일 닫기
             buf.close();
-            System.out.println("데이터 저장이 완료되었습니다.");
+//            System.out.println("데이터 저장이 완료되었습니다.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,10 +79,10 @@ public class UserManager {
         while (!UserManager.isLogin) {
             System.out.println("아이디를 입력해주세요. : ");
             String id = in.next();
-            System.out.println("비밀번호를 입력해주세요. : \n뒤로 가러면 quit을 입력해주세요.");
+            System.out.println("비밀번호를 입력해주세요. : \n뒤로 가러면 종료를 입력해주세요.");
             String password = in.next();
 
-            if (password.equals("quit")) break;
+            if (password.equals("종료")) break;
 
             // 데이터에 있는 id, password인지 확인. 동일하다면 로그인처리
             for (User user : UserManager.userList) {
@@ -106,10 +109,10 @@ public class UserManager {
             String id = in.next();
             System.out.println("회원가입할 비밀번호를 입력해주세요. : ");
             String password = in.next();
-            System.out.println("닉네임을 입력해주세요. : \n뒤로 가러면 quit을 입력해주세요.");
+            System.out.println("닉네임을 입력해주세요. : \n뒤로 가러면 종료를 입력해주세요.");
             String nickName = in.next();
 
-            if (nickName.equals("quit")) break;
+            if (nickName.equals("종료")) break;
 
             // id 중복여부 검사.
             for (User user : UserManager.userList) {
@@ -148,6 +151,29 @@ public class UserManager {
 
     // 회원탈퇴
     public void signOut() {
+        System.out.println("회원탈퇴를 진행하면 만드신 모든 필터가 사라집니다. 정말로 탈퇴하시 겠어요? (예 / 아니오)");
+        String command = in.next();
+
+        if (command.equals("예")){
+            // 데이터에 있는 id, password인지 확인. 동일하다면 탈퇴
+            for (int i = 0; i < userList.size(); i++) {
+                User user = userList.get(i);
+                if (user.getId().equals(UserManager.loggedInUser.getId()) && user.getPassword().equals(UserManager.loggedInUser.getPassword())) {
+                    userList.remove(i);
+                    UserManager.saveUserList();
+                    // 회원탈퇴 전 모든 필터를 삭제.
+                    FilterManager.signOut();
+                    System.out.println("회원탈퇴에 성공하였습니다.");
+                    return;
+                }
+            }
+            System.out.println("등록되지 않은 회원정보입니다.");
+        } else {
+            System.out.println("잘 선택하셨어요!");
+            return ;
+        }
+
 
     }
+
 }

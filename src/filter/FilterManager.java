@@ -220,4 +220,17 @@ public class FilterManager {
         }
         return false;
     }
+
+    // 회원탈퇴 전 내가 만든 모든 필터가 사라짐.
+    public static void signOut() {
+        // 뒤에서 부터 탐색하지 않으면 데이터 삭제되고 앞당겨지면서 모든 필터 데이터가 삭제되지 않음.
+        for (int i = filterList.size()-1; i >= 0; i--) {
+            FilterData curFilter = filterList.get(i);
+            if (curFilter.getMadeBy().equals(UserManager.loggedInUser.getNickName())) {
+                filterList.remove(i);
+            }
+        }
+        saveFilterCloud();
+        System.out.println("모든 필터가 정상적으로 삭제되었습니다.");
+    }
 }
