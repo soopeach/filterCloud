@@ -32,7 +32,6 @@ public class Main {
         System.out.println("[로그인을 해주세요. 아이디가 없다면 회원가입을 해주세요.]");
         System.out.println("1. 로그인");
         System.out.println("2. 회원가입");
-        System.out.println("3. 회원탈퇴");
         System.out.println("0. 종료");
     }
 
@@ -79,7 +78,11 @@ public class Main {
                 case 6 -> filterManager.getRandomFilter();
 
                 // 회원탈퇴
-                case 9 -> userManager.signOut();
+                case 9 -> {
+                    userManager.signOut();
+                    System.out.println("이용해주셔서 감사합니다.");
+                    return;
+                }
 
                default -> System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
