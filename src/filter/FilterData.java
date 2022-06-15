@@ -71,7 +71,7 @@ public class FilterData {
     @Override
     public String toString() {
         return "filter.FilterData [filterName=" + filterName + ", bright=" + bright + ", contrast=" + contrast + ", cloudy="
-                + cloudy + ", chroma=" + chroma + "]";
+                + cloudy + ", chroma=" + chroma;
     }
 
     public void printInfo() {
@@ -81,6 +81,16 @@ public class FilterData {
         System.out.println("흐림 : " + cloudy);
         System.out.println("채도 : " + chroma);
         System.out.println("만든이 : " + madeBy);
+        // 비디오 필터라면
+        if (this instanceof VideoFilter){
+            System.out.println("속성 : " + ((VideoFilter) this).getProperty());
+        // 사진 필터라면
+        } else if (this instanceof PhotoFilter) {
+            System.out.println("속성 : " + ((PhotoFilter) this).getProperty());
+        }
+
     }
+
+
 
 }

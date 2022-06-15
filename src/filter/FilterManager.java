@@ -26,11 +26,6 @@ public class FilterManager {
         threadForFilterCloud.start();
     }
 
-    public void add(String filterName, float bright, float contrast, float cloudy, float chroma, String madeBy) {
-        FilterData filterData = new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy);
-        filterList.add(filterData);
-    }
-
     // 찾고자하는 필터의 이름을 입력받아 내가 만든 필터를 찾아 위치를 반환해줌. 없으면 -1 반환
     public int findMineLocation(String filterName) {
         for (int i = 0; i < filterList.size(); i++) {
@@ -41,10 +36,6 @@ public class FilterManager {
             }
         }
         return -1;
-    }
-
-    public void remove(int pos) {
-        filterList.remove(pos);
     }
 
     // 클라우드에 있는 모든 필터 보기
@@ -79,9 +70,20 @@ public class FilterManager {
             float cloudy = in.nextFloat();
             System.out.print("chroma : ");
             float chroma = in.nextFloat();
+            System.out.print("For Video or Photo? (비디오 / 사진): ");
+            String property = in.next();
             // 현재 로그인 되어있는 유저의 닉네임
             String curUserNickname = UserManager.loggedInUser.getNickName();
-            filterList.add(new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+
+            // 사진용 필터라면
+            if (property.equals("사진")){
+                filterList.add(new PhotoFilter(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+            // 비디오용 필터라면
+            } else if (property.equals("비디오")){
+                filterList.add(new VideoFilter(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+            } else {
+                System.out.println("잘못된 속성입니다. 비디오 혹은 사진 중에 골라주세요.");
+            }
 
         }
         saveFilterCloud();
@@ -105,9 +107,23 @@ public class FilterManager {
             float cloudy = in.nextFloat();
             System.out.print("새로운 chroma를 입력해주세요. : ");
             float chroma = in.nextFloat();
+            System.out.print("새로운 property를 입력해주세요. (비디오 / 사진): ");
+            String property = in.next();
             // 현재 로그인 되어있는 유저의 닉네임
             String curUserNickname = UserManager.loggedInUser.getNickName();
-            filterList.set(pos, new FilterData(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+
+            // 사진용 필터라면
+            if (property.equals("사진")){
+                filterList.set(pos, new PhotoFilter(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+                // 비디오용 필터라면
+            } else if (property.equals("비디오")){
+                filterList.set(pos, new VideoFilter(filterName, bright, contrast, cloudy, chroma, curUserNickname));
+            } else {
+                System.out.println("잘못된 속성입니다. 비디오 혹은 사진 중에 골라주세요.");
+            }
+
+
+
         } else {
             System.out.println("해당하는 필터가 존재하지 않습니다. ");
         }
@@ -125,7 +141,7 @@ public class FilterManager {
 
         // 삭제할 필터의 이름과 일치하는 필터가 존재하고, 내가 만든 필터라면 삭제
         if (pos != -1) {
-            remove(pos);
+            filterList.remove(pos);
             System.out.println("정상적으로 삭제되었습니다.");
         } else {
             System.out.println("해당하는 이름의 필터가 존재하지 않습니다.");
@@ -141,6 +157,7 @@ public class FilterManager {
         if (isFilterCloudEmpty()) return;
         for (FilterData filter : filterList) {
             filter.printInfo();
+
         }
     }
 
@@ -158,8 +175,18 @@ public class FilterManager {
                 Float cloudy = Float.parseFloat(tokenizer.nextToken());
                 Float chroma = Float.parseFloat(tokenizer.nextToken());
                 String madeBy = tokenizer.nextToken();
+                String property = tokenizer.nextToken();
 
-                filterList.add(new FilterData(filterName, bright, contrast, cloudy, chroma, madeBy));
+                // 비디오 필터라면
+                if (property.equals("비디오")){
+                    filterList.add(new VideoFilter(filterName, bright, contrast, cloudy, chroma, madeBy));
+                // 사진 필터라면
+                } else if (property.equals("사진")){
+                    filterList.add(new PhotoFilter(filterName, bright, contrast, cloudy, chroma, madeBy));
+                } else {
+                    System.out.println("속성을 확인하는 중에 오류가 발생했습니다.");
+                }
+
             }
             buf.close();
         } catch (FileNotFoundException e) {
@@ -187,6 +214,13 @@ public class FilterManager {
                 buf.write(filter.getCloudy() + "#");
                 buf.write(filter.getChroma() + "#");
                 buf.write(filter.getMadeBy() + "#");
+                // 비디오 필터라면 비디오필터로 다운 캐스팅
+                if (filter instanceof VideoFilter){
+                    buf.write(((VideoFilter) filter).getProperty() + "#");
+                // 사진 필터라면 사진필터로 다운 캐스팅
+                } else if (filter instanceof PhotoFilter) {
+                    buf.write(((PhotoFilter) filter).getProperty() + "#");
+                }
                 buf.newLine(); // 개행 (다음 줄로 내림)
             }
             // 파일 닫기
@@ -233,4 +267,5 @@ public class FilterManager {
         saveFilterCloud();
         System.out.println("모든 필터가 정상적으로 삭제되었습니다.");
     }
+
 }
