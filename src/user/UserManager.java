@@ -113,7 +113,6 @@ public class UserManager {
             String nickName = in.next();
 
             if (nickName.equals("종료")) break;
-
             // id 중복여부 검사.
             for (User user : UserManager.userList) {
                 if (user.getId().equals(id)) {
@@ -129,7 +128,6 @@ public class UserManager {
                 }
 
             }
-
             // 중복되지 않았을 때만 회원가입에 성공
             if (signUpSuccess) {
                 User newUser = new User(id, password, nickName);
